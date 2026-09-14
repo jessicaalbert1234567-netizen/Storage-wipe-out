@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Info
@@ -24,10 +25,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.BuildConfig
 import com.example.R
 import com.galaxya12.cleaner.accessibility.AccessibilityHelper
 import com.galaxya12.cleaner.permissions.PermissionManager
@@ -49,12 +51,15 @@ import com.galaxya12.cleaner.ui.components.SectionHeader
 
 @Composable
 fun SettingsScreen(
+    viewModel: CleanerViewModel,
     onNavigateToAbout: () -> Unit,
     onNavigateToPrivacy: () -> Unit,
+    onNavigateToStorageAccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     var isA11yEnabled by remember { mutableStateOf(false) }
+    val devTestStatus by viewModel.devTestStatus.collectAsState()
 
     LaunchedEffect(Unit) {
         isA11yEnabled = AccessibilityHelper.isAccessibilityServiceEnabled(context)
@@ -82,7 +87,62 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            // General & Storage Section
+            // Developer Test Section (DEBUG only)
+            if (BuildConfig.DEBUG) {
+                item {
+                    Column(modifier = Modifier.widthIn(max = 600.dp)) {
+                        SectionHeader(title = "DEVELOPER TEST (DEBUG ONLY)")
+
+                        SamsungCard {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.BugReport,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Text(
+                                        text = "Developer Verification Test",
+                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Creates 10 MB of harmless temporary test files (test_junk_1.tmp, test_junk_2.tmp, test_cache.tmp) in the application's own cache. You can then run SCAN to confirm detection, and CLEAN to verify deletion.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    lineHeight = 20.sp
+                                )
+
+                                if (devTestStatus.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(
+                                        text = devTestStatus,
+                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(14.dp))
+
+                                ActionButton(
+                                    text = "CREATE TEST JUNK",
+                                    icon = Icons.Default.BugReport,
+                                    onClick = { viewModel.createDeveloperTestJunk() },
+                                    isPrimary = true,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    testTag = "btn_create_test_junk"
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Storage & SAF Section
             item {
                 Column(modifier = Modifier.widthIn(max = 600.dp)) {
                     SectionHeader(title = stringResource(R.string.settings_section_storage))
@@ -90,7 +150,7 @@ fun SettingsScreen(
                     SamsungCard {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
-                                text = "System App & Storage Cache",
+                                text = "Storage & System Cache",
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -102,6 +162,17 @@ fun SettingsScreen(
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
+
+                            ActionButton(
+                                text = "STORAGE ACCESS (SAF)",
+                                icon = Icons.Default.FolderOpen,
+                                onClick = onNavigateToStorageAccess,
+                                isPrimary = false,
+                                modifier = Modifier.fillMaxWidth(),
+                                testTag = "settings_btn_saf"
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
 
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -117,7 +188,7 @@ fun SettingsScreen(
                                 )
 
                                 ActionButton(
-                                    text = "STORAGE",
+                                    text = "SYSTEM STORAGE",
                                     icon = Icons.Default.Storage,
                                     onClick = { PermissionManager.openInternalStorageSettings(context) },
                                     isPrimary = false,
@@ -130,7 +201,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Accessibility Section
+            // Accessibility Section (Preserved legitimate integration)
             item {
                 Column(modifier = Modifier.widthIn(max = 600.dp)) {
                     SectionHeader(title = stringResource(R.string.settings_section_accessibility))

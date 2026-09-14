@@ -80,6 +80,11 @@ object FileSafetyPolicy {
             return true
         }
 
+        // Check for thumbnail cache markers first (even if located in DCIM/.thumbnails)
+        if (isThumbnailCache(file)) {
+            return true
+        }
+
         // Never classify normal user documents or media as junk
         if (isUserDocumentOrMediaFile(file)) {
             return false

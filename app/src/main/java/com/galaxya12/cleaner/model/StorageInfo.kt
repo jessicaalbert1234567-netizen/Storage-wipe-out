@@ -1,6 +1,6 @@
 package com.galaxya12.cleaner.model
 
-import java.util.Locale
+import com.galaxya12.cleaner.util.ByteFormatter
 
 data class StorageInfo(
     val totalBytes: Long = 0L,
@@ -13,20 +13,6 @@ data class StorageInfo(
     val formattedFree: String get() = formatBytes(freeBytes)
 
     companion object {
-        fun formatBytes(bytes: Long): String {
-            if (bytes <= 0L) return "0 B"
-            val units = arrayOf("B", "KB", "MB", "GB", "TB")
-            var value = bytes.toDouble()
-            var index = 0
-            while (value >= 1024.0 && index < units.size - 1) {
-                value /= 1024.0
-                index++
-            }
-            return if (index == 0) {
-                String.format(Locale.US, "%.0f %s", value, units[index])
-            } else {
-                String.format(Locale.US, "%.2f %s", value, units[index])
-            }
-        }
+        fun formatBytes(bytes: Long): String = ByteFormatter.format(bytes)
     }
 }

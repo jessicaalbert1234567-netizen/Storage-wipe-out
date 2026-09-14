@@ -36,12 +36,14 @@ import com.galaxya12.cleaner.ui.FilesScreen
 import com.galaxya12.cleaner.ui.MainScreen
 import com.galaxya12.cleaner.ui.PrivacyScreen
 import com.galaxya12.cleaner.ui.SettingsScreen
+import com.galaxya12.cleaner.ui.StorageAccessScreen
 import com.galaxya12.cleaner.ui.theme.GalaxyCleanerTheme
 
 enum class CleanerNavDestination {
     DASHBOARD,
     FILES,
     SETTINGS,
+    STORAGE_ACCESS,
     ABOUT,
     PRIVACY
 }
@@ -100,6 +102,23 @@ fun CleanerApp(
         viewModel.startScan()
     }
 
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshSafStatus()
+                viewModel.refreshStorageInfo()
+                if (PermissionManager.hasAllFilesAccess() || PermissionManager.hasStoragePermission(context)) {
+                    viewModel.startScan()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     LaunchedEffect(Unit) {
         if (!PermissionManager.hasStoragePermission(context)) {
             permissionLauncher.launch(PermissionManager.getRequiredStoragePermissions())
@@ -149,15 +168,26 @@ fun CleanerApp(
             CleanerNavDestination.DASHBOARD -> MainScreen(
                 viewModel = viewModel,
                 modifier = Modifier.padding(innerPadding),
-                onNavigateToFiles = { currentDestination = CleanerNavDestination.FILES }
+                onNavigateToFiles = { currentDestination = CleanerNavDestination.FILES },
+                onNavigateToStorageAccess = { currentDestination = CleanerNavDestination.STORAGE_ACCESS },
+                onGrantStoragePermission = {
+                    permissionLauncher.launch(PermissionManager.getRequiredStoragePermissions())
+                }
             )
             CleanerNavDestination.FILES -> FilesScreen(
                 viewModel = viewModel,
                 modifier = Modifier.padding(innerPadding)
             )
             CleanerNavDestination.SETTINGS -> SettingsScreen(
+                viewModel = viewModel,
                 onNavigateToAbout = { currentDestination = CleanerNavDestination.ABOUT },
                 onNavigateToPrivacy = { currentDestination = CleanerNavDestination.PRIVACY },
+                onNavigateToStorageAccess = { currentDestination = CleanerNavDestination.STORAGE_ACCESS },
+                modifier = Modifier.padding(innerPadding)
+            )
+            CleanerNavDestination.STORAGE_ACCESS -> StorageAccessScreen(
+                viewModel = viewModel,
+                onBack = { currentDestination = CleanerNavDestination.DASHBOARD },
                 modifier = Modifier.padding(innerPadding)
             )
             CleanerNavDestination.ABOUT -> AboutScreen(

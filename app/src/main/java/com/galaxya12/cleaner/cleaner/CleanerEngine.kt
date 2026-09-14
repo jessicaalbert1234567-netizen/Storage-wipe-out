@@ -1,6 +1,10 @@
 package com.galaxya12.cleaner.cleaner
 
 import android.content.Context
+import android.provider.DocumentsContract
+import android.util.Log
+import androidx.documentfile.provider.DocumentFile
+import com.example.BuildConfig
 import com.galaxya12.cleaner.model.CleanResult
 import com.galaxya12.cleaner.model.CleanableItem
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +27,16 @@ class CleanerEngine(private val context: Context) {
         val isDone: Boolean = false
     )
 
+    companion object {
+        private const val TAG = "GalaxyCleaner/Cleaner"
+
+        private fun logDebug(message: String) {
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, message)
+            }
+        }
+    }
+
     fun cleanItems(items: List<CleanableItem>): Flow<CleaningProgress> = flow {
         val selectedItems = items.filter { it.isSelected }
         val total = selectedItems.size
@@ -33,7 +47,7 @@ class CleanerEngine(private val context: Context) {
 
         emit(
             CleaningProgress(
-                currentItemName = "Starting clean engine...",
+                currentItemName = "Starting cleaner engine...",
                 processedCount = 0,
                 totalCount = total,
                 deletedCount = 0,
@@ -61,9 +75,11 @@ class CleanerEngine(private val context: Context) {
                 deletedCount++
                 freedBytes += item.sizeBytes
                 details.add("Deleted: ${item.name} (${item.formattedSize})")
+                logDebug("Deleted: ${item.name} ($freedBytes bytes total freed)")
             } else {
                 failedCount++
                 details.add("Failed: ${item.name}")
+                logDebug("Failed to delete: ${item.name}")
             }
         }
 
@@ -108,24 +124,35 @@ class CleanerEngine(private val context: Context) {
     }
 
     private fun deleteItemSafely(item: CleanableItem): Boolean {
-        // 1. If item has a content URI (e.g. MediaStore)
-        if (item.uri != null) {
+        // Case 1: SAF DocumentFile
+        if (item.isSafDocument && item.uri != null) {
             return try {
-                val rows = context.contentResolver.delete(item.uri, null, null)
-                rows > 0
-            } catch (_: SecurityException) {
-                false
-            } catch (_: IllegalArgumentException) {
-                false
-            } catch (_: Exception) {
+                val doc = DocumentFile.fromSingleUri(context, item.uri)
+                if (doc != null && doc.exists()) {
+                    doc.delete()
+                } else {
+                    DocumentsContract.deleteDocument(context.contentResolver, item.uri)
+                }
+            } catch (e: Exception) {
+                logDebug("SAF delete failed for ${item.name}: ${e.message}")
                 false
             }
         }
 
-        // 2. Regular filesystem delete
+        // Case 2: MediaStore Content URI
+        if (item.uri != null) {
+            return try {
+                val rows = context.contentResolver.delete(item.uri, null, null)
+                rows > 0
+            } catch (e: Exception) {
+                logDebug("ContentResolver delete failed for ${item.name}: ${e.message}")
+                false
+            }
+        }
+
+        // Case 3: Regular File
         val file = File(item.path)
         if (!file.exists()) {
-            // Already deleted or moved
             return false
         }
 
@@ -136,7 +163,6 @@ class CleanerEngine(private val context: Context) {
 
         return try {
             val deleted = file.delete()
-            // Never falsely report deletion: verify file no longer exists!
             deleted && !file.exists()
         } catch (_: SecurityException) {
             false

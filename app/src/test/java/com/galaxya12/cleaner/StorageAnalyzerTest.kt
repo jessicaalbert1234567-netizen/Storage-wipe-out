@@ -19,8 +19,8 @@ class StorageAnalyzerTest {
     fun testStorageInfoFormatting() {
         assertEquals("0 B", StorageInfo.formatBytes(0L))
         assertEquals("512 B", StorageInfo.formatBytes(512L))
-        assertEquals("1.00 KB", StorageInfo.formatBytes(1024L))
-        assertEquals("1.50 MB", StorageInfo.formatBytes((1.5 * 1024 * 1024).toLong()))
+        assertEquals("1 KB", StorageInfo.formatBytes(1024L))
+        assertEquals("1.5 MB", StorageInfo.formatBytes((1.5 * 1024 * 1024).toLong()))
         assertEquals("1.24 GB", StorageInfo.formatBytes((1.24 * 1024 * 1024 * 1024).toLong()))
     }
 

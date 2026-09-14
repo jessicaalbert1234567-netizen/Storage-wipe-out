@@ -11,6 +11,7 @@ import com.example.R
 import com.galaxya12.cleaner.MainActivity
 import com.galaxya12.cleaner.cleaner.StorageAnalyzer
 import com.galaxya12.cleaner.model.StorageInfo
+import com.galaxya12.cleaner.permissions.PermissionManager
 
 class CleanerWidget : AppWidgetProvider() {
 
@@ -18,9 +19,11 @@ class CleanerWidget : AppWidgetProvider() {
         val storageAnalyzer = StorageAnalyzer(context)
         val storageInfo = storageAnalyzer.queryStorageInfo()
         val junkBytes = getCachedJunkBytes(context)
+        val hasScanned = hasCompletedScan(context)
+        val requiresPerm = !PermissionManager.hasStoragePermission(context)
 
         for (widgetId in appWidgetIds) {
-            updateWidget(context, appWidgetManager, widgetId, junkBytes, storageInfo)
+            updateWidget(context, appWidgetManager, widgetId, junkBytes, storageInfo, hasScanned, requiresPerm)
         }
     }
 
@@ -51,8 +54,10 @@ class CleanerWidget : AppWidgetProvider() {
                 val storageAnalyzer = StorageAnalyzer(context)
                 val storageInfo = storageAnalyzer.queryStorageInfo()
                 val junkBytes = getCachedJunkBytes(context)
+                val hasScanned = hasCompletedScan(context)
+                val requiresPerm = !PermissionManager.hasStoragePermission(context)
                 for (id in ids) {
-                    updateWidget(context, appWidgetManager, id, junkBytes, storageInfo)
+                    updateWidget(context, appWidgetManager, id, junkBytes, storageInfo, hasScanned, requiresPerm)
                 }
             }
         }
@@ -64,15 +69,24 @@ class CleanerWidget : AppWidgetProvider() {
         const val ACTION_UPDATE_DATA = "com.galaxya12.cleaner.WIDGET_UPDATE_DATA"
         private const val PREFS_NAME = "cleaner_widget_prefs"
         private const val KEY_JUNK_BYTES = "key_junk_bytes"
+        private const val KEY_HAS_SCANNED = "key_has_scanned"
 
-        fun setCachedJunkBytes(context: Context, bytes: Long) {
+        fun setCachedJunkBytes(context: Context, bytes: Long, hasScanned: Boolean = true) {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            prefs.edit().putLong(KEY_JUNK_BYTES, bytes).apply()
+            prefs.edit()
+                .putLong(KEY_JUNK_BYTES, bytes)
+                .putBoolean(KEY_HAS_SCANNED, hasScanned)
+                .apply()
         }
 
         fun getCachedJunkBytes(context: Context): Long {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             return prefs.getLong(KEY_JUNK_BYTES, 0L)
+        }
+
+        fun hasCompletedScan(context: Context): Boolean {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            return prefs.getBoolean(KEY_HAS_SCANNED, false)
         }
 
         fun notifyDataChanged(context: Context) {
@@ -87,17 +101,26 @@ class CleanerWidget : AppWidgetProvider() {
             appWidgetManager: AppWidgetManager,
             widgetId: Int,
             junkBytes: Long,
-            storageInfo: StorageInfo
+            storageInfo: StorageInfo,
+            hasScanned: Boolean,
+            requiresPerm: Boolean
         ) {
             val options = appWidgetManager.getAppWidgetOptions(widgetId)
             val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 110)
+
+            val displayLabel = when {
+                requiresPerm -> "Access needed"
+                !hasScanned -> "Tap Scan"
+                junkBytes > 0L -> StorageInfo.formatBytes(junkBytes)
+                else -> "0 B (Clean)"
+            }
 
             val views = if (minWidth >= 200) {
                 // Medium Widget
                 RemoteViews(context.packageName, R.layout.widget_cleaner_medium).apply {
                     val ratioText = "${storageInfo.formattedUsed} / ${storageInfo.formattedTotal}"
                     setTextViewText(R.id.widget_storage_ratio, "Storage: $ratioText")
-                    setTextViewText(R.id.widget_cleanable_text, StorageInfo.formatBytes(junkBytes))
+                    setTextViewText(R.id.widget_cleanable_text, displayLabel)
 
                     val scanPending = PendingIntent.getBroadcast(
                         context,
@@ -118,7 +141,7 @@ class CleanerWidget : AppWidgetProvider() {
             } else {
                 // Small Widget
                 RemoteViews(context.packageName, R.layout.widget_cleaner_small).apply {
-                    setTextViewText(R.id.widget_junk_text, StorageInfo.formatBytes(junkBytes))
+                    setTextViewText(R.id.widget_junk_text, displayLabel)
 
                     val cleanPending = PendingIntent.getBroadcast(
                         context,
