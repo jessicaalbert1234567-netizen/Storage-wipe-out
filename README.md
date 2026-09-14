@@ -2,6 +2,17 @@
 
 A lightweight, offline storage & junk cleaner engineered specifically for the Samsung Galaxy A12 and modern Android devices (Android 11+).
 
+[![Build APK](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/actions/workflows/build-apk.yml/badge.svg)](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/actions/workflows/build-apk.yml)
+[![Latest Release](https://img.shields.io/github/v/release/jessicaalbert1234567-netizen/Storage-wipe-out?color=blue&label=Release)](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest)
+
+---
+
+### 📥 Download Links
+
+- 📲 **[Download Latest APK from Releases](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest)**
+- ⚡ **[Direct APK File Download](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest/download/app-debug.apk)**
+- 📦 **[Download from Latest GitHub Actions Artifacts](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/actions/workflows/build-apk.yml)**
+
 ---
 
 ## 🌟 Overview
