@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">Galaxy A12 Cleaner</string>
+    <string name="widget_name">Galaxy Cleaner</string>
+    <string name="widget_small_name">Galaxy Cleaner (Small)</string>
+    <string name="widget_medium_name">Galaxy Cleaner (Medium)</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_clean_junk">Clean Junk</string>
+    <string name="shortcut_scan_storage">Scan Storage</string>
+    <string name="shortcut_clean_junk_desc">Quickly clean safe temporary junk files</string>
+    <string name="shortcut_scan_storage_desc">Analyze internal storage usage</string>
+
+    <!-- Main Screen -->
+    <string name="storage_title">Storage</string>
+    <string name="storage_used_fmt">%1$s used</string>
+    <string name="storage_free_fmt">%1$s free</string>
+    <string name="storage_summary_fmt">%1$s / %2$s</string>
+    <string name="junk_cleanable_title">Junk that can be cleaned</string>
+    <string name="scan_now">SCAN NOW</string>
+    <string name="clean_now">CLEAN NOW</string>
+    <string name="scanning">Scanning...</string>
+    <string name="cleaning">Cleaning...</string>
+
+    <!-- Categories -->
+    <string name="cat_junk_files">Junk Files</string>
+    <string name="cat_temp_files">Temporary Files</string>
+    <string name="cat_old_apks">Old APK Files</string>
+    <string name="cat_thumbnails">Thumbnails</string>
+    <string name="cat_empty_files">Empty Files</string>
+    <string name="cat_large_files">Large Files</string>
+    <string name="cat_duplicate_files">Duplicate Files</string>
+
+    <!-- Section Headers -->
+    <string name="section_cleanable">CLEANABLE BY THIS APP</string>
+    <string name="section_manage_cache">MANAGE APP CACHE</string>
+
+    <!-- App Cache Explanation -->
+    <string name="app_cache_explanation">Android does not allow ordinary cleaner apps to silently delete another app\'s private cache. You can easily manage them via Android Settings.</string>
+    <string name="btn_manage_apps">MANAGE APPS</string>
+    <string name="btn_open_storage_settings">OPEN APP STORAGE SETTINGS</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_service_name">Galaxy Cleaner Accessibility Service</string>
+    <string name="accessibility_service_description">Optional accessibility support for Galaxy Cleaner. Does not automate settings or clear protected caches.</string>
+    <string name="accessibility_card_title">Accessibility Service</string>
+    <string name="accessibility_status_enabled">Status: Enabled</string>
+    <string name="accessibility_status_disabled">Status: Disabled</string>
+    <string name="accessibility_disclaimer">Optional accessibility support. Normal cleaning does not require Accessibility access.</string>
+    <string name="btn_open_accessibility_settings">OPEN ACCESSIBILITY SETTINGS</string>
+
+    <!-- Large File Filter -->
+    <string name="filter_100mb">100 MB+</string>
+    <string name="filter_500mb">500 MB+</string>
+    <string name="filter_1gb">1 GB+</string>
+
+    <!-- Duplicates -->
+    <string name="duplicate_group_fmt">Duplicate Group #%1$d</string>
+    <string name="btn_select">SELECT</string>
+    <string name="duplicate_warning">The app never automatically deletes all copies. Choose which copies to remove.</string>
+
+    <!-- Clean Results -->
+    <string name="clean_complete_title">CLEANING COMPLETE</string>
+    <string name="clean_freed_fmt">%1$s freed</string>
+    <string name="clean_details_fmt">Deleted: %1$d files | Failed: %2$d files | Freed: %3$s</string>
+
+    <!-- Settings & Navigation -->
+    <string name="nav_dashboard">Cleaner</string>
+    <string name="nav_files">Files</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_privacy">Privacy</string>
+    <string name="nav_about">About</string>
+
+    <!-- Settings Sections -->
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_cleaning">Cleaning</string>
+    <string name="settings_section_storage">Storage</string>
+    <string name="settings_section_accessibility">Accessibility</string>
+    <string name="settings_section_about">About</string>
+
+    <!-- Privacy Screen -->
+    <string name="privacy_title">Privacy &amp; Security</string>
+    <string name="privacy_local_only">100% Local Processing</string>
+    <string name="privacy_local_desc">All storage scans and file evaluations occur strictly on your device.</string>
+    <string name="privacy_no_upload">No Files Uploaded</string>
+    <string name="privacy_no_upload_desc">Your files, photos, documents, and usage data never leave your phone.</string>
+    <string name="privacy_no_analytics">Zero Telemetry &amp; Analytics</string>
+    <string name="privacy_no_analytics_desc">No trackers, no Google Analytics, no Firebase, and no advertisements.</string>
+    <string name="privacy_no_account">No Account or Login</string>
+    <string name="privacy_no_account_desc">No credentials or online accounts are needed. Works 100% offline.</string>
+    <string name="privacy_permission_least">Least Privilege</string>
+    <string name="privacy_permission_least_desc">We do not request MANAGE_EXTERNAL_STORAGE or QUERY_ALL_PACKAGES.</string>
+
+    <!-- About Screen -->
+    <string name="about_title">About Galaxy A12 Cleaner</string>
+    <string name="about_version">Version 1.0.0 (Build 1)</string>
+    <string name="about_description">A lightweight, offline storage &amp; junk cleaner crafted specifically for Samsung Galaxy A12 and modern Android devices.</string>
+    <string name="about_disclaimer">This application respects Android\'s security model and cannot silently delete another application\'s private cache.</string>
+</resources>

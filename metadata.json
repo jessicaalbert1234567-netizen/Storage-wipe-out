@@ -1,0 +1,6 @@
+{
+  "name": "Galaxy A12 Cleaner",
+  "description": "Lightweight offline storage and junk cleaner optimized for Samsung Galaxy A12 and Android 11+.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

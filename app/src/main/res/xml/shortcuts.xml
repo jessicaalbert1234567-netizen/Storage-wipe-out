@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="clean_junk"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:shortcutShortLabel="@string/shortcut_clean_junk"
+        android:shortcutLongLabel="@string/shortcut_clean_junk"
+        android:shortcutDisabledMessage="@string/shortcut_clean_junk_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aistudio.galaxycleaner.a12c"
+            android:targetClass="com.galaxya12.cleaner.MainActivity">
+            <extra android:name="action" android:value="CLEAN_JUNK" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="scan_storage"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:shortcutShortLabel="@string/shortcut_scan_storage"
+        android:shortcutLongLabel="@string/shortcut_scan_storage"
+        android:shortcutDisabledMessage="@string/shortcut_scan_storage_desc">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aistudio.galaxycleaner.a12c"
+            android:targetClass="com.galaxya12.cleaner.MainActivity">
+            <extra android:name="action" android:value="SCAN_STORAGE" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>
