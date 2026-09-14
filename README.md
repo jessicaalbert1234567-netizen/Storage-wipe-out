@@ -10,8 +10,8 @@ A lightweight, offline storage & junk cleaner engineered specifically for the Sa
 ### 📥 Download Links
 
 - 📲 **[Download Latest APK from Releases](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest)**
-- ⚡ **[Direct APK File Download](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest/download/app-debug.apk)**
-- 📦 **[Download from Latest GitHub Actions Artifacts](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/actions/workflows/build-apk.yml)**
+- ⚡ **[Direct APK File Download](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/releases/latest/download/GalaxyCleaner-v1.0.0.apk)**
+- 📦 **[Download from Latest GitHub Actions Artifacts (GalaxyCleaner-debug)](https://github.com/jessicaalbert1234567-netizen/Storage-wipe-out/actions/workflows/build-apk.yml)**
 
 ---
 
